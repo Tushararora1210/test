@@ -10,6 +10,9 @@ var app = {
 	//nodes
 	nodes   : [],
 
+	//Text to be drawn
+	text   : [],
+
 	//timing
 	timestamp  : 0,
 	now        : 0,
@@ -40,9 +43,25 @@ var app = {
 			var node = this.nodes[index];
 
 			this.context.fillStyle = node.color;
-			this.context.fillRect(node.x, node.y, node.width, node.height);
+			if(node.shape == 'circle'){
+				this.context.beginPath();
+				this.context.arc(node.x, node.y , node.width ,0 ,2*Math.PI);
+				this.context.fill();
+			}
+			else{
+				this.context.fillRect(node.x, node.y, node.width, node.height);
+			}
+			
 		}
 
+		for(var index in this.text){
+			var text = this.text[index];
+			
+			this.context.fillStyle = text.color;
+			this.context.font = text.fontSize+" "+text.font;
+			var texttobedisplayed=text.key+" "+text.value;
+			this.context.fillText(texttobedisplayed,text.x,text.y);
+		}
 		this.lastUpdate = Date.now();
 		this.timestamp+=dt;
 	},
@@ -57,10 +76,22 @@ var app = {
 
 		return { x : null, y : null, width : null, height : null };
 	},
+	getText: function(id){
+		for(var index in this.text){
+			var displayedText = this.text[index];
+			if(displayedText.id == id){
+				
+				return displayedText;
+			}
+
+		}
+		return {x : null, y : null, color: null, value : null, key : null, fontSize : null, font : null};
+	},
 
 	//events
 	onInit   : function(){},
-	onUpdate : function(){}
+	onUpdate : function(){},
+	reset : function(){}
 };
 
 window.onload = function(){
